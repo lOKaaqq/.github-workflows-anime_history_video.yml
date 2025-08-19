@@ -1,0 +1,27 @@
+name: Anime History Style Video
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install FFmpeg
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg
+
+      - name: Download Anime History Background
+        run: wget -O anime_history_bg.jpg "https://image.pollinations.ai/prompt/anime%20style%20Chinese%20ancient%20history%20story%20scene"
+
+      - name: Make Video
+        run: |
+          ffmpeg -loop 1 -i anime_history_bg.jpg -i "28s mp3.mp3" -c:v libx264 -c:a aac -shortest -pix_fmt yuv420p output.mp4
+
+      - name: Upload Output
+        uses: actions/upload-artifact@v3
+        with:
+          name: anime-history-video
+          path: output.mp4
